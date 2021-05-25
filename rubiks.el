@@ -226,6 +226,11 @@
       )
     cube))
 
+(defun apply-sequence (cube steps)
+  (let ((output cube))
+    (dolist (elt steps output)
+      (setq output (rotate-side-clockwise output elt)))
+    output))
 
 ;; TEST CODE BEGINS HERE
 

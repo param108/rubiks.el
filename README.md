@@ -79,6 +79,22 @@ You should see "SUCCESS" printed at the end of some output. In case of failure y
            (a f e)
            (b c d)
     ```
+5. `defun apply-sequence (cube steps)`
+
+   applies a sequence of commands `steps` to cube
+   ```
+   (insert (print-cube (apply-sequence (new-cube) (list 'left 'left 'left 'front 'front 'front 'right 'right 'right))))
+           (a e d)
+           (a e d)
+           (b b d)
+    (c c e)(a a e)(b b b)(f d e)
+    (c c e)(a a e)(b b b)(f d e)
+    (c c a)(f f b)(f f d)(c d e)
+           (c c a)
+           (d f a)
+           (d f f)
+       
+   ```
 ### Next Steps
 
 I want to write lisp code to solve a rubiks cube from first principles
