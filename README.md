@@ -4,7 +4,7 @@ The code simulates a rubiks cube using elisp on emacs
 
 ### Setup
 
-1. Open the file in emacs
+1. Open the file `rubiks.el` in emacs
 2. In the buffer do
 
 `ALT-x eval-buffer`
