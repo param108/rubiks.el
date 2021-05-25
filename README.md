@@ -46,22 +46,39 @@ You should see "SUCCESS" printed at the end of some output. In case of failure y
 
     `'horizontal` implies movement of the middle row to the right
 
-3. `defun print-cube (cube)` prints the cube in an origami folding pattern. Use with `insert` to print in buffer
-
-    `(insert (print-cube (new-cube)))`
-
-    ```
-           (e e e)
-           (e e e)
-           (e e e)
-    (c c c)(a a a)(b b b)(d d d)
-    (c c c)(a a a)(b b b)(d d d)
-    (c c c)(a a a)(b b b)(d d d)
-           (f f f)
-           (f f f)
-           (f f f)
-    ```
+3. `defun print-cube (cube)`
     
+    prints the cube in an origami folding pattern. Use with `insert` to print in buffer
+
+    ```
+    (insert (print-cube (new-cube)))
+           (e e e)
+           (e e e)
+           (e e e)
+    (c c c)(a a a)(b b b)(d d d)
+    (c c c)(a a a)(b b b)(d d d)
+    (c c c)(a a a)(b b b)(d d d)
+           (f f f)
+           (f f f)
+           (f f f)
+    ```
+4. `defun generate-random-cube (number-of-moves)`
+
+    generates a random cube by applying random moves `number-of-moves` times.
+
+    ```
+    (insert (print-cube (generate-random-cube 10)))
+    
+           (b b a)
+           (d e c)
+           (d f c)
+    (d c d)(e a a)(c e e)(c f f)
+    (d a a)(e b a)(c d b)(e c b)
+    (e b f)(d d b)(f a b)(e f a)
+           (c f a)
+           (a f e)
+           (b c d)
+    ```
 ### Next Steps
 
 I want to write lisp code to solve a rubiks cube from first principles

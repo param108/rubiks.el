@@ -202,6 +202,8 @@
              ))
 
 
+(setq rubiks-moves-list (list 'front 'right 'left 'back 'top 'bottom 'vertical 'horizontal))
+
 (defun rotate-side-clockwise (cube side)
   (cond ((eq side 'front) (rotate-clockwise-front cube))
         ((eq side 'right) (rotate-clockwise-right cube))
@@ -213,6 +215,17 @@
         ((eq side 'horizontal) (rotate-right-center-horizontal cube))
         (t cube)
         ))
+
+(defun generate-random-cube (number-of-moves)
+  (let ((cube (new-cube)))
+    (defun apply-random-move (cube)
+      (rotate-side-clockwise cube (nth (random (length rubiks-moves-list)) rubiks-moves-list))
+      )
+    (dotimes (number number-of-moves)
+      (setq cube (apply-random-move cube))
+      )
+    cube))
+
 
 ;; TEST CODE BEGINS HERE
 
