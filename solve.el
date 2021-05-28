@@ -8,74 +8,25 @@
 ;; Does sequence order matter ?
 
 
-(apply-sequence (new-cube) (list 'right 'front 'left))
-(setq start-cube (apply-sequence (new-cube) (list 'right 'front 'left)))
-(insert (print-cube start-cube))
-;;       (d e a)
-;;       (d e a)
-;;       (d c c)
-;;(c c c)(e a a)(e b b)(e d f)
-;;(c c c)(e a a)(e b b)(e d f)
-;;(d f f)(c f f)(a b b)(e d b)
-;;       (a b b)
-;;       (a f d)
-;;       (f f d)
+;; (apply-sequence (new-cube) (list 'right 'front 'left))
+;; (setq start-cube (apply-sequence (new-cube) (list 'right 'front 'left)))
+;; (insert (print-cube start-cube))
 
 
-(insert (print-cube (apply-sequence start-cube (list  'front 'front 'front 'right 'right 'right 'left 'left 'left))))
-;;       (a e e)
-;;       (a e e)
-;;       (e e e)
-;;(c c d)(c a a)(b b b)(d d e)
-;;(c c f)(a a a)(b b b)(d d d)
-;;(c c d)(f e a)(b b a)(f d d)
-;;       (b c f)
-;;       (f f f)
-;;       (f f c)
+;; (insert (print-cube (apply-sequence start-cube (list  'front 'front 'front 'right 'right 'right 'left 'left 'left))))
 
 
-(insert (print-cube (apply-sequence start-cube (list 'left 'left 'left 'front 'front 'front 'right 'right 'right))))
-;;       (e e e)
-;;       (e e e)
-;;       (e e e)
-;;(c c c)(a a a)(b b b)(d d d)
-;;(c c c)(a a a)(b b b)(d d d)
-;;(c c c)(a a a)(b b b)(d d d)
-;;       (f f f)
-;;       (f f f)
-;;       (f f f)
+;; (insert (print-cube (apply-sequence start-cube (list 'left 'left 'left 'front 'front 'front 'right 'right 'right))))
 
 
-(insert (print-cube (apply-sequence start-cube (list 'right 'right 'right 'left 'left 'left 'front 'front 'front))))
-;;       (e e e)
-;;       (e e e)
-;;       (b b e)
-;;(c c e)(a a c)(a b b)(d d d)
-;;(c c c)(a a f)(b b b)(d d d)
-;;(c c c)(a a f)(b e a)(b d d)
-;;       (f f d)
-;;       (f f a)
-;;       (f f f)
-
-
+;; (insert (print-cube (apply-sequence start-cube (list 'right 'right 'right 'left 'left 'left 'front 'front 'front))))
 
 ;; Yes Order matters
 
-;; A simple cost function. Number of entries that are the same as the center one. Sum over sides
 
-(defun center-of-side(side)
-  (dim2 side 1 1))
-
-(defun score-cube (cube)
-  (let ((total 0))
-    (dolist (side cube total)
-      (dolist (row side)
-      (dolist (color row)
-        (if (eq color (center-of-side side))(setq total (+ total 1)))))
-    total
-  )))
-
-(if (eq 54 (score-cube (new-cube))) (insert "\n;;Success") (throw 'score-cube "Score cube should be 54 for new-cube"))
+;;Success
+;;Success
+;;Success
 ;;Success
 
 
@@ -106,7 +57,7 @@
 (defun make-move-iterator-list (n)
   (let ((result '()))
     (dotimes (idx n result)
-      (push (list nil (read-list rubiks-moves-list)) result))
+      (push (list (car rubiks-moves-list) (read-list rubiks-moves-list)) result))
     result))
 
 ;; increment-move-iterator (iter)
@@ -146,35 +97,70 @@
       (push (car iter) result))
   (reverse result)))
 
+
+(defun have-4-sequences (input)
+  (let ((prev (car input)) (count 0) (found nil))
+    (dolist (val input)
+          (if (and (equal prev val) (not (equal val nil)))
+              (let ()
+                (if (eq 4 (setq count (1+ count)))
+                    (setq found t) nil))
+            (setq count 1))
+          (setq prev val))
+    found))
+
+;;(have-4-sequences '('a 'a 'a 'a 'b))
+
+
+
+(defun move-length (moves)
+  (let ((count 0))
+    (dolist (val moves)
+      (if (not (eq val nil))
+          (setq count (1+ count))
+        count))
+    count))
+
+;;sample code for move-length
+;;(move-length '('front 'front 'front 'front 'front))
+
+
 ;;sample code for iterator increment
 ;;(move-iterator-value it)
 
-(let (it)
-  (setq it (make-move-iterator-list 10))
-  (dotimes (itr 10)
-    (setq incr-it (next-move it))
-    (setq it (car incr-it))
-    (insert (format "\n;;%s\n"(move-iterator-value it)))))
-;;(front nil nil nil nil nil nil nil nil nil)
+;; filter out values with 4 continuous identical commands or less than 10 moves
+(defun iterate(cube)
+  (let (it (count 0))
+    (setq it (make-move-iterator-list 10))
+    (dotimes (itr 10000000)
+      (setq new-moves (move-iterator-value it))
+      (if (eq 99999 (% itr 100000)) (garbage-collect) nil)
+      (if (and (eq 10 (move-length new-moves)) (eq nil (have-4-sequences new-moves)))
+          (let ()
+            (setq count (1+ count))
+            (if (eq 10 count) (throw 'fail) nil)
+            (insert (format "\n;; %s %s %s\n" (score-cube (apply-sequence cube new-moves)) new-moves itr))) nil)
+      (setq incr-it (next-move it))
+      (setq it (car incr-it)))))
 
-;;(right nil nil nil nil nil nil nil nil nil)
+(iterate (generate-random-cube 10) )
+;; 17 (front front right front front front right front front front) 561801
 
-;;(left nil nil nil nil nil nil nil nil nil)
+;; 16 (right front right front front front right front front front) 561802
 
-;;(back nil nil nil nil nil nil nil nil nil)
+;; 15 (left front right front front front right front front front) 561803
 
-;;(top nil nil nil nil nil nil nil nil nil)
+;; 14 (back front right front front front right front front front) 561804
 
-;;(bottom nil nil nil nil nil nil nil nil nil)
+;; 12 (top front right front front front right front front front) 561805
 
-;;(vertical nil nil nil nil nil nil nil nil nil)
+;; 18 (bottom front right front front front right front front front) 561806
 
-;;(horizontal nil nil nil nil nil nil nil nil nil)
+;; 15 (vertical front right front front front right front front front) 561807
 
-;;(front front nil nil nil nil nil nil nil nil)
+;; 21 (horizontal front right front front front right front front front) 561808
 
-;;(right front nil nil nil nil nil nil nil nil)
-
+;; 15 (front right right front front front right front front front) 561809
 
 
 

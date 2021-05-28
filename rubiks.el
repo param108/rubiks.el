@@ -20,6 +20,23 @@
          (list  (list  'f 'f 'f ) (list  'f 'f 'f ) (list  'f 'f 'f ) ) ))  ;;bottom
 
 
+
+;; A simple cost function. Number of entries that are the same as the center one. Sum over sides
+
+(defun center-of-side(side)
+  (dim2 side 1 1))
+
+(defun score-cube (cube)
+  (let ((total 0))
+    (dolist (side cube total)
+      (dolist (row side)
+        (dolist (color row)
+          (if (eq color (center-of-side side))(setq total (+ total 1)))))
+      total
+      )))
+
+;;(if (eq 54 (score-cube (new-cube))) (insert "\n;;Success") (throw 'score-cube "Score cube should be 54 for new-cube"))
+
 (defun print-cube (cube)
   (concat (format "\n;;       %s\n;;       %s\n;;       %s\n"
                   (nth 0 (top cube))
