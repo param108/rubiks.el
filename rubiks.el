@@ -21,30 +21,30 @@
 
 
 (defun print-cube (cube)
-  (concat (format "\n       %s\n       %s\n       %s\n"
+  (concat (format "\n;;       %s\n;;       %s\n;;       %s\n"
                   (nth 0 (top cube))
                   (nth 1 (top cube))
                   (nth 2 (top cube))
                   )
-          (format "%s%s%s%s\n"
+          (format ";;%s%s%s%s\n"
                   (nth 0 (left cube))
                   (nth 0 (front cube))
                   (nth 0 (right cube))
                   (nth 0 (back cube))
                   )
-          (format "%s%s%s%s\n"
+          (format ";;%s%s%s%s\n"
                   (nth 1 (left cube))
                   (nth 1 (front cube))
                   (nth 1 (right cube))
                   (nth 1 (back cube))
                   )
-          (format "%s%s%s%s\n"
+          (format ";;%s%s%s%s\n"
                   (nth 2 (left cube))
                   (nth 2 (front cube))
                   (nth 2 (right cube))
                   (nth 2 (back cube))
                   )
-          (format "       %s\n       %s\n       %s\n"
+          (format ";;       %s\n;;       %s\n;;       %s\n"
                   (nth 0 (bottom cube))
                   (nth 1 (bottom cube))
                   (nth 2 (bottom cube))
