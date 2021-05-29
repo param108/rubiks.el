@@ -242,11 +242,15 @@
       (setq cube (apply-random-move cube))
       )
     cube))
-
+(setq rubiks-solution-found "The solution is found")
+;; If we hit a solved cube we should signal
 (defun apply-sequence (cube steps)
-  (let ((output cube))
+  (let ((output cube) (applied '()))
     (dolist (elt steps output)
-      (setq output (rotate-side-clockwise output elt)))
+      (setq output (rotate-side-clockwise output elt))
+      (push elt applied)
+      (if (eq 54 (score-cube output))
+          (throw 'rubiks-solution-found (list output applied)) nil))
     output))
 
 ;; TEST CODE BEGINS HERE
