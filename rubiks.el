@@ -219,7 +219,9 @@
              ))
 
 
-(setq rubiks-moves-list (list 'front 'right 'left 'back 'top 'bottom 'vertical 'horizontal))
+;;(setq rubiks-moves-list (list 'front 'right 'left 'back 'top 'bottom 'vertical 'horizontal))
+;; remove the central movements
+(setq rubiks-moves-list (list 'front 'right 'left 'back 'top 'bottom))
 
 (defun rotate-side-clockwise (cube side)
   (cond ((eq side 'front) (rotate-clockwise-front cube))
@@ -250,8 +252,8 @@
       (setq output (rotate-side-clockwise output elt))
       (push elt applied)
       (if (eq 54 (score-cube output))
-          (throw 'rubiks-solution-found (list output applied)) nil))
-    output))
+          (throw 'rubiks-solution-found (list output (reverse applied) t)) nil))
+    (list output (reverse applied) nil)))
 
 ;; TEST CODE BEGINS HERE
 
