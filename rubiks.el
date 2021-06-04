@@ -78,6 +78,11 @@
         (list (dim2 side 1 2) (dim2 side 1 1) (dim2 side 1 0) )
         (list (dim2 side 2 2) (dim2 side 2 1) (dim2 side 2 0) ) ))
 
+(defun rotate-anti-clockwise (side)
+  (list (list (dim2 side 2 0) (dim2 side 2 1) (dim2 side 2 2) )
+        (list (dim2 side 1 0) (dim2 side 1 1) (dim2 side 1 2) )
+        (list (dim2 side 0 0) (dim2 side 0 1) (dim2 side 0 2) ) ))
+
 (defun rotate-clockwise-front (cube)
   (list  (rotate-clockwise (front cube))                                             ;;front
          (list  (list (dim2 (top cube) 0 2) (dim2 (right cube) 1 0) (dim2 (right cube) 2 0))
@@ -234,6 +239,16 @@
         ((eq side 'horizontal) (rotate-right-center-horizontal cube))
         (t cube)
         ))
+
+(defun rotate-cube-left (cube)
+  (list (right cube);;front
+        (back cube);;right
+        (front cube);;left
+        (left cube);;back
+        (rotate-clockwise (top cube));;top
+        (rotate-anti-clockwise (bottom cube));;bottom
+        )
+  )
 
 (defun generate-random-cube (number-of-moves)
   (let ((cube (new-cube)))
