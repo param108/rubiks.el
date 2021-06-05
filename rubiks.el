@@ -26,7 +26,7 @@
 (defun center-of-side(side)
   (dim2 side 1 1))
 
-(defun score-cube (cube)
+(defun pieces-in-right-place (cube)
   (let ((total 0))
     (dolist (side cube total)
       (dolist (row side)
@@ -34,6 +34,19 @@
           (if (eq color (center-of-side side))(setq total (+ total 1)))))
       total
       )))
+
+;; subtract corners and sides that are wrong
+(defun pieces-in-wrong-place (cube)
+  (let ((total 0))
+    (dolist (side cube total)
+      (dolist (row side)
+        (dolist (color row)
+          (if (not (eq color (center-of-side side))) (setq total (+ total 1)))))
+      total
+      )))
+
+(defun score-cube (cube)
+  (- (pieces-in-right-place cube) (pieces-in-wrong-place cube)))
 
 ;;(if (eq 54 (score-cube (new-cube))) (insert "\n;;Success") (throw 'score-cube "Score cube should be 54 for new-cube"))
 
