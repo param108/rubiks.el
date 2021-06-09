@@ -28,6 +28,12 @@ OR
 
 You should see "SUCCESS" printed at the end of some output. In case of failure you will see "FAIL: <some message>"
 
+OR
+
+From command-line
+
+`make test`
+
 ### Using the code
 
 1. `defun new-cube ()`
@@ -95,6 +101,17 @@ You should see "SUCCESS" printed at the end of some output. In case of failure y
            (d f f)
        
    ```
+### Running the Recursive solution
+
+The recursive solutions is in `recursive_solution.el`. To run it on terminal just do
+
+`make recursive`
+
+### Running the iterative solution
+
+The iterative solution is in `iterative_solution.el`. It doesn't run in the terminal because it needs a library `iter2` So just do `eval-buffer` in emacs.
+
 ### Next Steps
 
 I want to write lisp code to solve a rubiks cube from first principles
+

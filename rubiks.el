@@ -26,27 +26,15 @@
 (defun center-of-side(side)
   (dim2 side 1 1))
 
-(defun pieces-in-right-place (cube)
-  (let ((total 0))
-    (dolist (side cube total)
-      (dolist (row side)
-        (dolist (color row)
-          (if (eq color (center-of-side side))(setq total (+ total 1)))))
-      total
-      )))
-
-;; subtract corners and sides that are wrong
-(defun pieces-in-wrong-place (cube)
-  (let ((total 0))
-    (dolist (side cube total)
-      (dolist (row side)
-        (dolist (color row)
-          (if (not (eq color (center-of-side side))) (setq total (+ total 1)))))
-      total
-      )))
-
 (defun score-cube (cube)
-  (- (pieces-in-right-place cube) (pieces-in-wrong-place cube)))
+  (let ((total 0))
+    (dolist (side cube total)
+      (dolist (row side)
+        (dolist (color row)
+          (if (eq color (center-of-side side))(setq total (+ total 1))
+            (setq total (- total 1))))))
+      total
+      ))
 
 ;;(if (eq 54 (score-cube (new-cube))) (insert "\n;;Success") (throw 'score-cube "Score cube should be 54 for new-cube"))
 
@@ -283,6 +271,33 @@
           (throw 'rubiks-solution-found (list output (reverse applied) t)) nil))
     (list output (reverse applied) nil)))
 
+(defun have-4-sequences (input)
+  (let ((prev (car input)) (count 0) (found nil))
+    (dolist (val input)
+      (if (and (equal prev val) (not (equal val nil)))
+          (let ()
+            (if (eq 4 (setq count (1+ count)))
+                (setq found t) nil))
+        (setq count 1))
+      (setq prev val))
+    found))
+
+;;(have-4-sequences '('a 'a 'a 'a 'b))
+
+
+
+(defun move-length (moves)
+  (let ((count 0))
+    (dolist (val moves)
+      (if (not (eq val nil))
+          (setq count (1+ count))
+        count))
+    count))
+
+;;sample code for move-length
+;;(move-length '('front 'front 'front 'front 'front))
+
+
 ;; TEST CODE BEGINS HERE
 
 (defun test-cube ()
@@ -335,11 +350,11 @@
     (throw 'rot-test (format "\nFAIL: %s\n" msg))))
 
 (defun rot-test ()
-  (insert (catch 'rot-test
+  (print (catch 'rot-test
             ( let (value)
               (dolist ( elt (list 'front 'back 'left 'right 'top 'bottom 'vertical 'horizontal) value)
                 (let ((cube (test-cube)))
-                  (insert (format "\n%s\n" elt))
-                  (insert (print-cube (rotate-side-clockwise cube elt)))
+                  (print (format "\n%s\n" elt))
+                  (print (print-cube (rotate-side-clockwise cube elt)))
                   (setq value (test (format "%s" elt) (test-result elt)(rotate-side-clockwise cube elt) )
                         )))))))
