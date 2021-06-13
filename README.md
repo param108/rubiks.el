@@ -111,6 +111,20 @@ The recursive solutions is in `recursive_solution.el`. To run it on terminal jus
 
 The iterative solution is in `iterative_solution.el`. It doesn't run in the terminal because it needs a library `iter2` So just do `eval-buffer` in emacs.
 
+### Distributed solution
+
+`make distributed`
+
+Then in separate terminals run
+
+`make worker1`
+
+`make worker2`
+
+`make worker3`
+
+`make worker4`
+
 ### Next Steps
 
 I want to write lisp code to solve a rubiks cube from first principles
