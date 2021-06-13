@@ -1,4 +1,4 @@
-(defun worker (port worker-filter)
+(defun worker-server (port worker-filter)
   (make-network-process :buffer "*network-buffer*" :type 'datagram :server 't :family 'ipv4 :service port :filter worker-filter :name "rubiks-worker"))
 
 (defun worker-client (port)

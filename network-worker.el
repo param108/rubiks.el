@@ -1,5 +1,9 @@
+(load-file "./recursive_solution.elc")
+(load-file "./network.elc")
+
 (defvar worker-proc nil)
 (defvar worker-client-proc nil)
+(defvar worker-valid-indices '())
 
 (defun worker-recurse (worker-input)
   (print (format "\n;;initial score %s" (score-cube (worker-data-cube worker-input))))
@@ -18,12 +22,6 @@
   solved)
 
 (defun worker-cube-recurse  (cube moves depth max-depth max-cube-info worker-idx)
-  (if (eq depth 0)
-      (print (format "\n;; Start\n %s" (print-cube cube))))
-  (if (eq 999999 (% iteration-count 1000000))
-      (progn (print (format "\n;;%s\n" (garbage-collect)))
-             (setq iteration-count 0))
-    (setq iteration-count (1+ iteration-count)))
   (defun solution-not-found ()
     (puthash cube t cube-cache)
     (if (> (score-cube cube) (max-cube-score max-cube-info))
@@ -32,27 +30,48 @@
         (dolist (elt rubiks-moves-list)
           (setq max-cube-info
                 (worker-cube-recurse (rotate-side-clockwise cube elt)
-                              (append moves (list elt)) (1+ depth) max-depth max-cube-info))
+                                     (append moves (list elt)) (1+ depth) max-depth max-cube-info))
           (if (eq 54 (max-cube-score max-cube-info))
               (return))))
     max-cube-info)
-  (progn
-    (setq found-in-hash (gethash cube cube-cache nil))
-    (if (not (eq found-in-hash nil))
-        max-cube-info
-      (if (eq 54 (score-cube cube))
-          (list 54 moves cube)
-        (solution-not-found)))))
+  (if (and (> (length moves) 0) (move-in-valid-indices (nth 0 moves)))
+      max-cube-info
+    (progn (if (eq depth 0)
+               (print (format "\n;; Start\n %s" (print-cube cube))))
+           (if (eq 999999 (% iteration-count 1000000))
+               (progn (print (format "\n;;%s\n" (garbage-collect)))
+                      (setq iteration-count 0))
+             (setq iteration-count (1+ iteration-count)))
+           (setq found-in-hash (gethash cube cube-cache nil))
+           (if (not (eq found-in-hash nil))
+               max-cube-info
+             (if (eq 54 (score-cube cube))
+                 (list 54 moves cube)
+               (solution-not-found))))))
+
+(defun setup-worker-indices (worker-input)
+  (setq worker-idx (worker-data-idx worker-input))
+  (setq idx 0)
+  (setq div (length rubiks-moves-list))
+  (dolist (move rubiks-moves-list)
+    (if (equal worker-idx (% idx div))
+        (push move worker-valid-indices))))
+
+(defun move-in-valid-indices (move)
+  (let ((found nil))
+    (dolist (m rubiks-moves-list)
+      (if (eq m move)
+          (progn (setq found t) (return))))
+    found))
 
 (defun worker-filter (proc string)
   (let (worker-output)
     (print (format "\n;;%s\n" string))
     (setq worker-input (eval-string string))
-    (setq worker-output (worker-recurse worker-input))
+    (setup-worker-indices worker-input)
+    (setq worker-output (worker-cube-recurse worker-input))
     (process-send-string worker-client-proc (format "%s" worker-output))))
 
 (defun worker-start (port server-port)
   (setq worker-client-proc (worker-client server-port))
-  (setq worker-proc (worker port worker-filter)))
-
-(worker 9997)
+  (setq worker-proc (worker-server port worker-filter)))
